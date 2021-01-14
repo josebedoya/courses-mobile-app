@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { StyleSheet, Alert, Image } from 'react-native';
-import { Container, Content, Header, Button, Icon, Card, ListItem, Text, Body, Left, Right, Title, Toast } from 'native-base';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { StyleSheet, Image, Alert } from 'react-native';
+import {
+  Container,
+  Header,
+  Content,
+  Card,
+  ListItem,
+  Text,
+  Body,
+  Left,
+  Right,
+  Icon,
+  Button,
+  Toast,
+} from 'native-base';
 import { SwipeRow } from 'react-native-swipe-list-view';
-import { deleteChapter } from './coursesSlice';
 
-const ChaptersScreen = ({ route, navigation }) => {
+import { fetchCategories, deleteCategory } from './courseCategoriesSlice';
+
+const CoursesCategoriesScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
-  const {
-    id: courseId,
-    title,
-    chapters,
-    courseCategory: { title: category },
-    language: { title: language }
-  } = route.params.course;
+
+  const { data } = useSelector(state => state.courseCategories);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   const deleteItemAlert = (id, title) =>
     Alert.alert(
-      'Delete Chapter',
-      `Delete "${title}" chapter?`,
+      'Delete Category',
+      `Delete "${title}" category?`,
       [
         {
           text: 'Cancel',
@@ -35,15 +47,14 @@ const ChaptersScreen = ({ route, navigation }) => {
     );
 
   const deleteItem = async (id) => {
-    const response = await dispatch(deleteChapter({id, courseId}));
-    if (deleteChapter.fulfilled.match(response)) {
+    const response = await dispatch(deleteCategory(id));
+    if (deleteCategory.fulfilled.match(response)) {
       Toast.show({
-        text: 'Chapter was deleted successfully',
+        text: 'Category was deleted successfully',
         buttonText: 'Okay',
         type: 'success',
         duration: 4000
       });
-      navigation.navigate('Courses');
     }
   }
 
@@ -62,20 +73,13 @@ const ChaptersScreen = ({ route, navigation }) => {
           />
         </Body>
         <Right>
-          <Button
-            transparent
-            onPress={() =>
-              navigation.navigate('AddChapter', {
-                course: route.params.course
-              })
-            }
-          >
+          <Button transparent onPress={() => navigation.navigate('AddCategory')}>
             <Icon name='add-circle-sharp' />
           </Button>
         </Right>
       </Header>
-    )
-  }
+    );
+  };
 
   const renderItem = item => {
     return (
@@ -91,16 +95,14 @@ const ChaptersScreen = ({ route, navigation }) => {
             <Text>Right</Text>
           </Right>
         </ListItem>
-        <ListItem bordered style={styles.standaloneRowFront}>
+        <ListItem style={styles.standaloneRowFront}>
           <Body>
             <Text>{item.title}</Text>
           </Body>
-          <Right>
-            <Text note>{item.duration}</Text>
-          </Right>
+          <Right />
         </ListItem>
       </SwipeRow>
-    )
+    );
   };
 
   return (
@@ -108,11 +110,9 @@ const ChaptersScreen = ({ route, navigation }) => {
       {renderHeader()}
       <Content>
         <Card style={styles.subHeaderCard}>
-          <Text style={styles.pageTitle}>Chapters</Text>
-          <Text>{title}</Text>
-          <Text style={styles.subtitle}>{category} | {language}</Text>
+          <Text style={styles.pageTitle}>Categories</Text>
         </Card>
-        {chapters.map(item => renderItem(item))}
+        <Card>{data.map(item => renderItem(item))}</Card>
       </Content>
     </Container>
   )
@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: 22,
     fontWeight: '700',
-    marginBottom: 10,
   },
   subtitle: {
     color: '#777',
@@ -154,6 +153,6 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
   },
-})
+});
 
-export default ChaptersScreen;
+export default CoursesCategoriesScreen;

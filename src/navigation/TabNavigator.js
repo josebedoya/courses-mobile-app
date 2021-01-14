@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import LoginScreen from './../screens/login/LoginScreen';
 import DashboardNavigator from './DashboardNavigator';
 import CoursesNavigator from '../navigation/CoursesNavigator';
 
@@ -27,7 +28,7 @@ const TabNavigator = () => {
                 color={color}
               />
             );
-          } else if (route.name === 'Courses') {
+          } else if (route.name === 'CoursesMain') {
             return (
               <Ionicons
                 name={focused ? 'school' : 'school-outline'}
@@ -59,8 +60,11 @@ const TabNavigator = () => {
             component={DashboardNavigator}
           />
           <Tab.Screen
-            name="Courses"
+            name="CoursesMain"
             component={CoursesNavigator}
+            options={{
+              title: 'Courses'
+            }}
           />
         </>
       )}

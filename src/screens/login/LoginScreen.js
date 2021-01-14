@@ -46,9 +46,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Container>
-      {isLoading ? (
-        <LoadingOverlay />
-      ) : (
+      {isLoading && <LoadingOverlay />}
       <Content contentContainerStyle={styles.mainContent}>
         <Image source={require('../../../assets/10pearls.png')} style={{ width: 200, height: 200 }} />
         <Item regular style={styles.formItem}>
@@ -79,7 +77,6 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.forgot_button}>Forgot Password?</Text>
         </TouchableOpacity>
       </Content>
-      )}
     </Container>
   )
 }

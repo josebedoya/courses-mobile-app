@@ -83,6 +83,19 @@ export const createChapter = createAsyncThunk(
   },
 );
 
+export const deleteChapter = createAsyncThunk(
+  'courses/deleteChapter',
+  async (data, { rejectWithValue }) => {
+    const { id, courseId } = data;
+    try {
+      await API.delete('/chapters', { data: { id } });
+      return {id, courseId};
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  },
+);
+
 const coursesSlice = createSlice({
   name: 'courses',
   initialState,
@@ -184,7 +197,22 @@ const coursesSlice = createSlice({
       state.isSubmitting = false;
       state.error = payload;
     });
-
+    //
+    builder.addCase(deleteChapter.pending, state => {
+      state.isSubmitting = true;
+    });
+    builder.addCase(deleteChapter.fulfilled, (state, action) => {
+      const { payload } = action;
+      state.isSubmitting = false;
+      // console.log('The Payload: ', payload);
+      const course = state.data
+      // state.data = state.data.filter(item => item.id !== payload);
+    });
+    builder.addCase(deleteChapter.rejected, (state, action) => {
+      const { payload } = action;
+      state.isSubmitting = false;
+      state.error = payload;
+    });
   },
 });
 

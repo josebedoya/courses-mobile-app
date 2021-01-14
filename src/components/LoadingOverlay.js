@@ -10,7 +10,7 @@ const LoadingOverlay = () => {
 
 const styles = StyleSheet.create({
   spinner: {
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
     flex: 1,
     position: 'absolute',
     width: '100%',
